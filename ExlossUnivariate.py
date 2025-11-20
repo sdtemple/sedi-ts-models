@@ -5,13 +5,13 @@
 import torch
 from torch.functional import F
 
-def ExlossUnivariate(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1.2, lamda_overestimate=1.0, lamda=1.0):
+def ExlossUnivariate(pred, target, up_th=0.9, down_th=0.1, lambda_underestimate=1.2, lambda_overestimate=1.0, lambda_init=1.0):
     '''
     up_th: percentile threshold of maximum value
     down_th: percentile threshold of minimum value
-    lamda_underestimate: The penalty when underestimating is greater than the penalty when overestimating
-    lamda_overestimate: Penalty for overestimation
-    lamda: weight of Exloss and MSE
+    lambda_underestimate: The penalty when underestimating is greater than the penalty when overestimating
+    lambda_overestimate: Penalty for overestimation
+    lambda: weight of Exloss and MSE
     '''
     
     mse_loss = torch.mean((pred-target)**2)
@@ -26,15 +26,15 @@ def ExlossUnivariate(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1
     pred_down_area = -F.relu(tar_down-pred) # The part of pred that is smaller than tar_down
 
     # Increase the loss weight for the underestimated part of pred (the maximum value prediction is too small, the minimum value prediction is too large)
-    loss_up = lamda_underestimate*(target_up_area-pred_up_area)*F.relu(target_up_area-pred_up_area)+\
-              lamda_overestimate*(pred_up_area-target_up_area)*F.relu(pred_up_area-target_up_area)
-    loss_down = lamda_overestimate*(target_down_area-pred_down_area)*F.relu(target_down_area-pred_down_area)+\
-                lamda_underestimate*(pred_down_area-target_down_area)*F.relu(pred_down_area-target_down_area)
+    loss_up = lambda_underestimate*(target_up_area-pred_up_area)*F.relu(target_up_area-pred_up_area)+\
+              lambda_overestimate*(pred_up_area-target_up_area)*F.relu(pred_up_area-target_up_area)
+    loss_down = lambda_overestimate*(target_down_area-pred_down_area)*F.relu(target_down_area-pred_down_area)+\
+                lambda_underestimate*(pred_down_area-target_down_area)*F.relu(pred_down_area-target_down_area)
     loss_up = torch.mean(loss_up)
     loss_down = torch.mean(loss_down)
     ex_loss = (loss_up + loss_down)/(1-up_th+down_th)
 
-    loss_all = mse_loss + lamda*ex_loss
+    loss_all = mse_loss + lambda_init*ex_loss
 
     # print("all_loss:", loss_all.item(), "mse_loss:", mse_loss.item(), "ex_loss", ex_loss.item())
 
