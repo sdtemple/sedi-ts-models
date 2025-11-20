@@ -1,7 +1,7 @@
 import torch
 from torch.functional import F
 
-def Exloss(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1.2, lamda_overestimate=1.0, lamda=1.0):
+def ExlossUnivariate(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1.2, lamda_overestimate=1.0, lamda=1.0):
     '''
     up_th: percentile threshold of maximum value
     down_th: percentile threshold of minimum value
@@ -12,10 +12,9 @@ def Exloss(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1.2, lamda_
     
     mse_loss = torch.mean((pred-target)**2)
 
-    N, C, H, W = pred.shape
     # Get the 90% and 10% quantiles in target as the thresholds for extreme maximum and minimum values, denoted as tar_up and tar_down
-    tar_up =  torch.quantile(target.view(N, C, H*W), q=up_th, dim=-1).unsqueeze(-1).unsqueeze(-1) # N,C,1,1
-    tar_down =  torch.quantile(target.view(N, C, H*W), q=down_th, dim=-1).unsqueeze(-1).unsqueeze(-1) # N,C,1,1
+    tar_up =  torch.quantile(target, q=up_th,)
+    tar_down =  torch.quantile(target, q=down_th,)
 
     target_up_area = F.relu(target-tar_up) # The part of target that is greater than tar_up
     target_down_area = -F.relu(tar_down-target) # The part of target that is smaller than tar_down
