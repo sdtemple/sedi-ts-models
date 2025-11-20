@@ -1,3 +1,7 @@
+# This code comes from https://github.com/black-yt/ExtremeCast/blob/main/Exloss.py
+# I modified it to work for univariate time series prediction
+# Which involves adjusting some of the dimension sizes when tar_up and tar_down are computed
+
 import torch
 from torch.functional import F
 
