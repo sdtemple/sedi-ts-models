@@ -39,8 +39,3 @@ def ExlossUnivariate(pred, target, up_th=0.9, down_th=0.1, lamda_underestimate=1
     # print("all_loss:", loss_all.item(), "mse_loss:", mse_loss.item(), "ex_loss", ex_loss.item())
 
     return loss_all
-
-if __name__ == "__main__":
-    pred = torch.randn(1,69,721,1440)
-    target = torch.randn(1,69,721,1440)
-    print(Exloss(pred, target))
