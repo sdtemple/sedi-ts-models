@@ -14,3 +14,5 @@ Procedure
     - Modify `kfolding.sh` to match `modeling.sh` and `slurm` details
     - `bash kfolding.sh` which creates training details in `outputs/`
 7. Summarize results into `parsed_logs/` with `python results.py`
+
+For each fold, it could take multiple hours on a GPU node.
