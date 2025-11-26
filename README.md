@@ -15,4 +15,4 @@ Procedure
     - `bash kfolding.sh` which creates training details in `outputs/`
 7. Summarize results into `parsed_logs/` with `python results.py`
 
-For each fold, it could take multiple hours on a GPU node!
+For each fold, it could take multiple hours on a GPU node.
